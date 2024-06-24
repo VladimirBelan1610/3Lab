@@ -23,7 +23,7 @@ QMap<QString, double> ByFolderCalcStrateg::calculateSize(const QString& director
     return folderSizes;
 }
 
-double ByFolderCalcStrateg::calculateFolderSize(const QString& folderPath)
+int ByFolderCalcStrateg::calculateFolderSize(const QString& folderPath)
 {
     QDir dir(folderPath);
     dir.setFilter(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
@@ -40,5 +40,5 @@ double ByFolderCalcStrateg::calculateFolderSize(const QString& folderPath)
         }
     }
 
-    return static_cast<double>(totalSize);
+    return (totalSize);
 }

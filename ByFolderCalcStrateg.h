@@ -9,7 +9,7 @@ class ByFolderCalcStrateg : public CalculationStrategy
 {
 public:
     QMap<QString, double> calculateSize(const QString& directory) override;
-    double calculateFolderSize(const QString& folderPath);
+    int calculateFolderSize(const QString& folderPath);
 };
 
 #endif // BYFOLDERCALCSTRATEG_H
