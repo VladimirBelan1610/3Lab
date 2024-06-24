@@ -4,7 +4,8 @@
 #include "ByFolderCalcStrateg.h"
 #include "ByTypeCalcStrateg.h"
 #include <Context.h>
-
+#include <iostream>
+#include <memory>
 using namespace std;
 QString percentageCalc(double size, double total_size) { //Функция для вычисления процентного соотношения размера текущего файла/папки size от
     // общего размера директории total_size
@@ -18,39 +19,40 @@ QString percentageCalc(double size, double total_size) { //Функция для
 
 int main()
 {
-
     QTextStream stream(stdin);
     QTextStream out(stdout);
-    qDebug() << "Enter the directory path:";
+    cout << "Enter the directory path:";
     QString directory = stream.readLine();
-    ByFolderCalcStrateg* byFolderStrategy = new ByFolderCalcStrateg();
-    ByTypeCalcStrateg* byTypeStrategy = new ByTypeCalcStrateg();
-    Context* contextByFolder = new Context(new ByFolderCalcStrateg());
-    Context* contextByType = new Context(new ByTypeCalcStrateg());
-    QMap<QString, double> sizeByFolder = contextByFolder->calculateSize(directory);
-    QMap<QString, double> sizeByType = contextByType->calculateSize(directory);
+    unique_ptr<Context> context;
+    cout << "Chose strategy : " << "\n"
+         << "1 - for File Type Strategy " <<"\n"
+         << "2 - for Folder Strategy :  " << "\n";
+    QString c = 0;
+    stream >> c;
+    if (c == "1")
+    {
+        context = make_unique<Context>(make_unique<ByFolderCalcStrateg>());
+    }
+    else if (c == "2")
+    {
+        context = make_unique<Context>(make_unique<ByTypeCalcStrateg>());
+    }
+    else
+    {
+        out << "ERROR" << "\n";
+        return -1;
+    }
+    QMap<QString, double> strat = context->calculate(directory);
     // Вывод результатов вычислений на экран
-    cout << "Size calculation by folder:";
-    for (auto it = sizeByFolder.begin(); it != sizeByFolder.end(); ++it) {
+    cout << "Size calculation :" << endl;
+    for (auto it = strat.begin(); it != strat.end(); ++it) {
         QString name = it.key();
         double size = it.value(); // размер файла/папки
-        double totalSize = byFolderStrategy->calculateFolderSize(directory);
+        int totalSize = calculateFolderSize(directory);
         QString percentage = percentageCalc(size, totalSize );
-        cout << name.toStdString() << ": " << it.value() << "KB " << percentage.toStdString() << "\n";
+        double value = it.value()/1024 ;
+        cout << name.toStdString() << ": " << value << "KB " << percentage.toStdString() << "\n";
     }
-    qDebug() << "\nSize calculation by type:";
-    for (auto it = sizeByType.begin(); it != sizeByType.end(); ++it) {
-        QString name = it.key();
-        double size = it.value(); // размер файла/папки
-        double totalSize = byFolderStrategy->calculateFolderSize(directory);
-        QString percentage = percentageCalc(size, totalSize );
-        cout << name.toStdString() << ": " << it.value() << "KB " << percentage.toStdString() << "\n";
-    }
-    // Освобождение ресурсов
-    delete contextByFolder;
-    delete contextByType;
-    // Не забываем освободить также объекты стратегий
-    delete byFolderStrategy;
-    delete byTypeStrategy;
+    cout << "\n";
     return 0;
 }

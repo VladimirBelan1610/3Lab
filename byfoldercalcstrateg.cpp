@@ -1,29 +1,6 @@
 #include "ByFolderCalcStrateg.h"
 #include <QDir>
-
-QMap<QString, double> ByFolderCalcStrateg::calculateSize(const QString& directory)
-{
-    QDir dir(directory);
-    dir.setFilter(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
-    dir.setSorting(QDir::Size | QDir::Reversed);
-
-    QFileInfoList list = dir.entryInfoList();
-    QMap<QString, double> folderSizes;
-
-    for (const QFileInfo& fileInfo : list) {
-        if (fileInfo.isDir()) {
-            double folderSize = calculateFolderSize(fileInfo.absoluteFilePath()) / 1024.0; // Convert bytes to KB
-            folderSizes.insert(fileInfo.fileName(), folderSize);
-        } else {
-            double fileSize = static_cast<double>(fileInfo.size()) / 1024.0; // Convert bytes to KB
-            folderSizes.insert(fileInfo.fileName(), fileSize);
-        }
-    }
-
-    return folderSizes;
-}
-
-int ByFolderCalcStrateg::calculateFolderSize(const QString& folderPath)
+int calculateFolderSize(const QString& folderPath)
 {
     QDir dir(folderPath);
     dir.setFilter(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
@@ -41,4 +18,25 @@ int ByFolderCalcStrateg::calculateFolderSize(const QString& folderPath)
     }
 
     return (totalSize);
+}
+QMap<QString, double> ByFolderCalcStrateg::calculateSize(const QString& directory)
+{
+    QDir dir(directory);
+    dir.setFilter(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+    dir.setSorting(QDir::Size | QDir::Reversed);
+
+    QFileInfoList list = dir.entryInfoList();
+    QMap<QString, double> folderSizes;
+
+    for (const QFileInfo& fileInfo : list) {
+        if (fileInfo.isDir()) {
+            double folderSize = calculateFolderSize(fileInfo.absoluteFilePath());
+            folderSizes.insert(fileInfo.fileName(), folderSize);
+        } else {
+            double fileSize = static_cast<double>(fileInfo.size());
+            folderSizes.insert(fileInfo.fileName(), fileSize);
+        }
+    }
+
+    return folderSizes;
 }

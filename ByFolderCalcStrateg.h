@@ -2,14 +2,13 @@
 #define BYFOLDERCALCSTRATEG_H
 
 #include "CalculationStrategy.h"
-
-#include "CalculationStrategy.h"
-
+#include <QDir>
+#include <QFileInfo>
+int calculateFolderSize(const QString& folderPath);
 class ByFolderCalcStrateg : public CalculationStrategy
 {
 public:
     QMap<QString, double> calculateSize(const QString& directory) override;
-    int calculateFolderSize(const QString& folderPath);
 };
 
 #endif // BYFOLDERCALCSTRATEG_H

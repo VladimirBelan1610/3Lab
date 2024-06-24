@@ -1,20 +1,23 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
-#include "CalculationStrategy.h"
 #include <QString>
-#include <iostream>
+#include <QMap>
+#include "CalculationStrategy.h"
+#include <memory>
 using namespace std;
 class Context
 {
 public:
-    Context(CalculationStrategy* cont): p(cont) {};
-    ~Context() { delete p; }
-    QMap<QString, double> calculateSize( const QString & directory )
+    Context(unique_ptr<CalculationStrategy> st) : calcstrategy(move(st)) {};
+    void set(unique_ptr<CalculationStrategy> str)
     {
-        return p->calculateSize(directory);
+        this->calcstrategy = move(str);
+    }
+    QMap<QString, double> calculate(const QString& dir)
+    {
+        return calcstrategy->calculateSize(dir);
     }
 private:
-    CalculationStrategy* p;
+    unique_ptr<CalculationStrategy> calcstrategy;
 };
-
 #endif // CONTEXT_H
