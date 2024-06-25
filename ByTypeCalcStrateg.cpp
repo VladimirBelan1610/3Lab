@@ -12,10 +12,10 @@ QMap<QString, double> ByTypeCalcStrateg::calculateSize(const QString& directory)
     QFileInfo file(directory); // Создаем объект типа QFileInfo для проверки информации о его текущей позиции в файловой системе
 
     if (file.isDir()) { // Проверка, является ли текущий файл директорией (папкой)
-        QDir dir(directory); // Создаем объект типа QDir, передавая в него текущий путь, для работы с директориями
+        QDir dir(directory); //объект типа QDir, передавая в него текущий путь, для работы с директориями
         QFileInfoList filelist = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::NoSymLinks); //Получаем список файлов из текущей директории
 
-        for (const QFileInfo& fileInfo : filelist) { // Проходимся по файлам из этого списка
+        for (const QFileInfo& fileInfo : filelist) { // Проходимся по файлам из списка
             QString type = fileInfo.suffix(); //Вычисляем расширение файла с помощью метода suffix()
             int file_size = fileInfo.size(); //Вычисляем размер текущего файла
             map[type] += file_size; // Заносим в словарь размер файла к соответствующему типу
